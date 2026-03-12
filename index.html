@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>像素战棋 v0.1</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div id="game-container">
+        <div id="top-bar">
+            <div id="turn-info">
+                <span id="current-turn">玩家回合</span>
+                <span id="turn-number">回合 1</span>
+            </div>
+            <button id="end-turn-btn">结束回合</button>
+        </div>
+        
+        <div id="game-board"></div>
+        
+        <div id="bottom-panel">
+            <div id="unit-info">
+                <div id="selected-unit-name">-</div>
+                <div class="stat-bar">
+                    <span class="stat-label">生命</span>
+                    <div class="bar-container">
+                        <div class="bar hp-bar" id="hp-bar"></div>
+                    </div>
+                    <span id="hp-text">0/0</span>
+                </div>
+                <div class="stat-bar">
+                    <span class="stat-label">法力</span>
+                    <div class="bar-container">
+                        <div class="bar mp-bar" id="mp-bar"></div>
+                    </div>
+                    <span id="mp-text">0/0</span>
+                </div>
+                <div class="stat-row">
+                    <span>攻击: <span id="stat-atk">0</span></span>
+                    <span>护甲: <span id="stat-arm">0</span></span>
+                    <span>移动: <span id="stat-mov">0</span></span>
+                </div>
+            </div>
+            
+            <div id="skill-panel">
+                <div id="skill-list"></div>
+            </div>
+        </div>
+        
+        <div id="action-buttons">
+            <button id="move-btn" class="action-btn">移动</button>
+            <button id="attack-btn" class="action-btn">攻击</button>
+        </div>
+    </div>
+    
+    <div id="message-log"></div>
+    
+    <script src="js/core/utils.js"></script>
+    <script src="js/core/hex-grid.js"></script>
+    <script src="js/entities/unit.js"></script>
+    <script src="js/skills/skill.js"></script>
+    <script src="js/skills/skill-definitions.js"></script>
+    <script src="js/game/game-state.js"></script>
+    <script src="js/ui/ui-controller.js"></script>
+    <script src="js/game/main.js"></script>
+</body>
+</html>
