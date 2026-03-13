@@ -8,12 +8,16 @@ class HexGrid {
     }
 
     init() {
-        for (let q = 0; q < this.width; q++) {
-            for (let r = 0; r < this.height; r++) {
+        for (let col = 0; col < this.width; col++) {
+            for (let row = 0; row < this.height; row++) {
+                const q = col;
+                const r = row - Math.floor(col / 2);
                 const cell = {
                     q: q,
                     r: r,
                     s: -q - r,
+                    col: col,
+                    row: row,
                     unit: null
                 };
                 this.cells.push(cell);
@@ -23,6 +27,10 @@ class HexGrid {
 
     getCell(q, r) {
         return this.cells.find(c => c.q === q && c.r === r);
+    }
+
+    getCellByColRow(col, row) {
+        return this.cells.find(c => c.col === col && c.row === row);
     }
 
     getNeighbors(cell) {
@@ -50,18 +58,19 @@ class HexGrid {
         return results;
     }
 
-    hexToPixel(q, r) {
-        const x = this.hexSize * (3/2 * q);
-        const y = this.hexSize * (Math.sqrt(3)/2 * q + Math.sqrt(3) * r);
+    hexToPixel(col, row) {
+        const size = this.hexSize;
+        const x = size * 1.732 * (col + 0.5 * (row % 2));
+        const y = size * 1.5 * row;
         return { x, y };
     }
 
     getGridDimensions() {
-        const lastCell = this.getCell(this.width - 1, this.height - 1);
-        const lastPixel = this.hexToPixel(lastCell.q, lastCell.r);
+        const maxX = this.hexSize * 1.732 * (this.width + 0.5);
+        const maxY = this.hexSize * 1.5 * this.height;
         return {
-            width: lastPixel.x + this.hexSize * 2,
-            height: lastPixel.y + this.hexSize * 2
+            width: maxX + this.hexSize,
+            height: maxY + this.hexSize
         };
     }
 }

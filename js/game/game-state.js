@@ -20,7 +20,10 @@ const GameState = {
     },
     
     addUnit(unit, q, r) {
-        const cell = this.grid.getCell(q, r);
+        let cell = this.grid.getCell(q, r);
+        if (!cell) {
+            cell = this.grid.getCellByColRow(q, r);
+        }
         if (cell) {
             unit.setCell(cell);
             this.units.push(unit);
@@ -53,7 +56,7 @@ const GameState = {
         }
     },
     
-    endTurn() {
+    async endTurn() {
         const units = this.currentTurn === 'player' ? this.getPlayerUnits() : this.getEnemyUnits();
         units.forEach(u => u.endTurn());
         
@@ -61,7 +64,7 @@ const GameState = {
         
         if (this.currentTurn === 'player') {
             this.currentTurn = 'enemy';
-            this.startEnemyTurn();
+            await this.startEnemyTurn();
         } else {
             this.currentTurn = 'player';
             this.turnNumber++;
@@ -74,10 +77,12 @@ const GameState = {
         this.clearHighlights();
     },
     
-    startEnemyTurn() {
-        setTimeout(() => {
-            this.endTurn();
-        }, 1000);
+    async startEnemyTurn() {
+        const enemyUnits = this.getEnemyUnits();
+        if (enemyUnits.length > 0) {
+            await EnemyAI.executeTurn(enemyUnits);
+        }
+        this.endTurn();
     },
     
     clearHighlights() {

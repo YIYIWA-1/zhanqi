@@ -7,9 +7,15 @@ const UIController = {
     },
     
     bindEvents() {
-        document.getElementById('end-turn-btn').addEventListener('click', () => {
+        document.getElementById('back-to-menu-btn').addEventListener('click', () => {
+            document.getElementById('main-menu').style.display = 'flex';
+            document.getElementById('game-container').style.display = 'none';
+            document.getElementById('cheat-menu').style.display = 'none';
+        });
+        
+        document.getElementById('end-turn-btn').addEventListener('click', async () => {
             if (GameState.currentTurn === 'player') {
-                GameState.endTurn();
+                await GameState.endTurn();
                 this.render();
             }
         });
@@ -31,6 +37,68 @@ const UIController = {
                 this.render();
             }
         });
+        
+        document.getElementById('cheat-toggle').addEventListener('click', () => {
+            document.getElementById('cheat-options').classList.toggle('show');
+        });
+        
+        document.getElementById('spawn-melee-enemy').addEventListener('click', () => {
+            this.spawnEnemy('melee');
+        });
+        
+        document.getElementById('spawn-ranged-enemy').addEventListener('click', () => {
+            this.spawnEnemy('ranged');
+        });
+        
+        document.getElementById('spawn-stake').addEventListener('click', () => {
+            this.spawnEnemy('stake');
+        });
+    },
+    
+    spawnEnemy(type) {
+        let unit;
+        const emptyCells = GameState.grid.cells.filter(c => !c.unit);
+        if (emptyCells.length === 0) {
+            Utils.showMessage('没有空位置了！');
+            return;
+        }
+        
+        const randomCell = emptyCells[Math.floor(Math.random() * emptyCells.length)];
+        
+        if (type === 'melee') {
+            unit = new Unit({
+                name: '敌方近战',
+                faction: 'enemy',
+                symbol: '敌'
+            });
+            unit.addSkill(Utils.cloneSkill(SkillDefinitions.dash));
+            unit.addSkill(Utils.cloneSkill(SkillDefinitions.selfHeal));
+            unit.addSkill(Utils.cloneSkill(SkillDefinitions.bruteForce));
+            unit.addSkill(Utils.cloneSkill(SkillDefinitions.flashStrike));
+        } else if (type === 'ranged') {
+            unit = new Unit({
+                name: '敌方远程',
+                faction: 'enemy',
+                symbol: '弓',
+                isRanged: true
+            });
+            unit.addSkill(Utils.cloneSkill(SkillDefinitions.aim));
+            unit.addSkill(Utils.cloneSkill(SkillDefinitions.fireball));
+            unit.addSkill(Utils.cloneSkill(SkillDefinitions.firestorm));
+        } else {
+            unit = new Unit({
+                name: '木桩',
+                faction: 'enemy',
+                symbol: '桩',
+                maxHp: 1000,
+                hp: 1000,
+                canAct: false
+            });
+        }
+        
+        GameState.addUnit(unit, randomCell.q, randomCell.r);
+        Utils.showMessage(`生成了 ${unit.name}！`);
+        this.render();
     },
     
     render() {
@@ -53,7 +121,7 @@ const UIController = {
         gridContainer.style.height = dims.height + 'px';
         
         grid.cells.forEach(cell => {
-            const pixel = grid.hexToPixel(cell.q, cell.r);
+            const pixel = grid.hexToPixel(cell.col, cell.row);
             const hexElement = this.createHexCell(cell, pixel);
             gridContainer.appendChild(hexElement);
         });
@@ -108,6 +176,12 @@ const UIController = {
     createUnitSprite(unit) {
         const sprite = document.createElement('div');
         sprite.className = `unit-sprite ${unit.faction}`;
+        
+        const canAct = unit.actionPoints > 0 || !unit.hasAttacked || unit.movement > 0;
+        if (!canAct && unit.faction === 'player') {
+            sprite.classList.add('inactive');
+        }
+        
         sprite.textContent = unit.symbol;
         
         const hpBar = document.createElement('div');
@@ -123,6 +197,13 @@ const UIController = {
         
         hpBar.appendChild(hpFill);
         sprite.appendChild(hpBar);
+        
+        if (unit.faction === 'player') {
+            const apIndicator = document.createElement('div');
+            apIndicator.className = 'unit-ap-indicator';
+            apIndicator.textContent = unit.actionPoints;
+            sprite.appendChild(apIndicator);
+        }
         
         return sprite;
     },
@@ -324,15 +405,15 @@ const UIController = {
         attackBtn.disabled = !canAct || unit.hasAttacked || unit.cannotAttackThisTurn || unit.actionPoints < 1;
         
         if (GameState.actionMode === 'move') {
-            moveBtn.style.background = '#4cc9f0';
+            moveBtn.classList.add('active');
         } else {
-            moveBtn.style.background = '';
+            moveBtn.classList.remove('active');
         }
         
         if (GameState.actionMode === 'attack') {
-            attackBtn.style.background = '#4cc9f0';
+            attackBtn.classList.add('active');
         } else {
-            attackBtn.style.background = '';
+            attackBtn.classList.remove('active');
         }
     }
 };

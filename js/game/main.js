@@ -1,6 +1,19 @@
 document.addEventListener('DOMContentLoaded', () => {
-    initGame();
+    bindMenuEvents();
 });
+
+function bindMenuEvents() {
+    document.getElementById('test-mode-btn').addEventListener('click', () => {
+        startTestMode();
+    });
+}
+
+function startTestMode() {
+    document.getElementById('main-menu').style.display = 'none';
+    document.getElementById('game-container').style.display = 'flex';
+    document.getElementById('cheat-menu').style.display = 'block';
+    initGame();
+}
 
 function initGame() {
     const GRID_WIDTH = 8;
@@ -26,7 +39,12 @@ function createTestUnits() {
     soldier1.addSkill(Utils.cloneSkill(SkillDefinitions.selfHeal));
     soldier1.addSkill(Utils.cloneSkill(SkillDefinitions.bruteForce));
     soldier1.addSkill(Utils.cloneSkill(SkillDefinitions.flashStrike));
-    GameState.addUnit(soldier1, 2, 9);
+    
+    const cell1 = GameState.grid.getCellByColRow(2, 9);
+    if (cell1) {
+        soldier1.setCell(cell1);
+        GameState.units.push(soldier1);
+    }
     
     const soldier2 = new Unit({
         name: '远程士兵',
@@ -37,7 +55,12 @@ function createTestUnits() {
     soldier2.addSkill(Utils.cloneSkill(SkillDefinitions.aim));
     soldier2.addSkill(Utils.cloneSkill(SkillDefinitions.fireball));
     soldier2.addSkill(Utils.cloneSkill(SkillDefinitions.firestorm));
-    GameState.addUnit(soldier2, 5, 9);
+    
+    const cell2 = GameState.grid.getCellByColRow(5, 9);
+    if (cell2) {
+        soldier2.setCell(cell2);
+        GameState.units.push(soldier2);
+    }
     
     const stake1 = new Unit({
         name: '木桩',
@@ -47,7 +70,11 @@ function createTestUnits() {
         hp: 1000,
         canAct: false
     });
-    GameState.addUnit(stake1, 3, 3);
+    const stakeCell1 = GameState.grid.getCellByColRow(3, 3);
+    if (stakeCell1) {
+        stake1.setCell(stakeCell1);
+        GameState.units.push(stake1);
+    }
     
     const stake2 = new Unit({
         name: '木桩2',
@@ -57,7 +84,11 @@ function createTestUnits() {
         hp: 1000,
         canAct: false
     });
-    GameState.addUnit(stake2, 5, 3);
+    const stakeCell2 = GameState.grid.getCellByColRow(5, 3);
+    if (stakeCell2) {
+        stake2.setCell(stakeCell2);
+        GameState.units.push(stake2);
+    }
     
     const stake3 = new Unit({
         name: '木桩3',
@@ -67,5 +98,9 @@ function createTestUnits() {
         hp: 1000,
         canAct: false
     });
-    GameState.addUnit(stake3, 4, 2);
+    const stakeCell3 = GameState.grid.getCellByColRow(4, 2);
+    if (stakeCell3) {
+        stake3.setCell(stakeCell3);
+        GameState.units.push(stake3);
+    }
 }

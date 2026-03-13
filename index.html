@@ -3,12 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>像素战棋 v0.1</title>
+    <title>像素战棋 v0.2</title>
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-    <div id="game-container">
+    <div id="main-menu">
+        <h1>像素战棋</h1>
+        <button class="menu-btn" disabled>开始游戏</button>
+        <button class="menu-btn" disabled>我的队伍</button>
+        <button class="menu-btn" disabled>仓库</button>
+        <button class="menu-btn" disabled>设置</button>
+        <button class="menu-btn" id="test-mode-btn">测试模式</button>
+    </div>
+    
+    <div id="game-container" style="display: none;">
         <div id="top-bar">
+            <button id="back-to-menu-btn">返回菜单</button>
             <div id="turn-info">
                 <span id="current-turn">玩家回合</span>
                 <span id="turn-number">回合 1</span>
@@ -53,15 +63,25 @@
         </div>
     </div>
     
+    <div id="cheat-menu" style="display: none;">
+        <button id="cheat-toggle">⚙</button>
+        <div id="cheat-options">
+            <button class="cheat-option-btn" id="spawn-melee-enemy">生成近战士兵</button>
+            <button class="cheat-option-btn" id="spawn-ranged-enemy">生成远程士兵</button>
+            <button class="cheat-option-btn" id="spawn-stake">生成木桩</button>
+        </div>
+    </div>
+    
     <div id="message-log"></div>
     
     <script src="js/core/utils.js"></script>
     <script src="js/core/hex-grid.js"></script>
     <script src="js/entities/unit.js"></script>
     <script src="js/skills/skill.js"></script>
-    <script src="js/skills/skill-definitions.js"></script>
     <script src="js/game/game-state.js"></script>
+    <script src="js/skills/skill-definitions.js"></script>
     <script src="js/ui/ui-controller.js"></script>
+    <script src="js/game/ai.js"></script>
     <script src="js/game/main.js"></script>
 </body>
 </html>
